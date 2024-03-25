@@ -4,7 +4,7 @@ using WorldTravelTour2024.Infrastructure.Data.Models;
 
 namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
 {
-    public class AgentConfiguration : IEntityTypeConfiguration<Agent>
+    internal class AgentConfiguration : IEntityTypeConfiguration<Agent>
     {
         public void Configure(EntityTypeBuilder<Agent> builder)
         {
@@ -28,7 +28,7 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
                 .OnDelete(DeleteBehavior.NoAction);
             
             var data = new SeedDatabase();
-            builder.HasData(data.Agent);
+            builder.HasData(new Agent[] { data.Agent });
         }
     }
 }

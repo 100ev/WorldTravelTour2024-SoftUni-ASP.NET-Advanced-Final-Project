@@ -7,10 +7,10 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
 {
     public class SeedDatabase
     {
-        public IdentityUser TravellerUser { get; set; } = null!;
-        public IdentityUser HostUser { get; set; } = null!;
-        public IdentityUser TransportationProviderUser { get; set; } = null!;
-        public IdentityUser AgentUser { get; set; } = null!;
+        public IdentityUser TravellerUser { get; set; } = new IdentityUser();
+        public IdentityUser HostUser { get; set; } = new IdentityUser();
+        public IdentityUser TransportationProviderUser { get; set; } = new IdentityUser();
+        public IdentityUser AgentUser { get; set; } = new IdentityUser();
         public Traveller Traveller { get; set; } = null!;
         public Host Host { get; set; } = null!;
         public TransportationProvider TransportationProvider { get; set; } = null!;
@@ -25,14 +25,14 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
 
         public SeedDatabase()
         {
-            SeedUSers();
+            SeedUsers();
             SeedTravellers();
             SeedHosts();
             SeedTransportationProviders();
             SeedAgents();
             SeedContinents();
         }
-        private void SeedUSers()
+        private void SeedUsers()
         {
             var hasher = new PasswordHasher<IdentityUser>();
 
@@ -88,11 +88,9 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
                 FirstName = "John",
                 LastName = "Smith",
                 Age = 29,
-                PhoneNumber = "032-756-657",
+                PhoneNumber = "032756657",
                 Money = 1000.00M
             };
-            Traveller.User.Id = TravellerUser.Id;
-
         }
 
         public void SeedHosts()
@@ -104,12 +102,11 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
                 LastName = "Baggins",
                 Email = "ringbearer@mail.com",
                 Address = "Miami, Florida, Palm Street 1",
-                PhoneNumber = "01+973-397",
+                PhoneNumber = "01973397",
                 Rooms = 3,
                 PricePerNight = 200.00M,
                 Wallet = 0.00M,
             };
-            Host.User.Id = HostUser.Id;
         }
 
         public void SeedTransportationProviders()
@@ -119,11 +116,10 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
                 Id = 1,
                 FirstName = "Jason",
                 LastName = "Statham",
-                PhoneNumber = "044-258-852",
-                CountryNameToTransportGuest = "Egypt",                
+                PhoneNumber = "044258852",
+                CountryNameToTransportGuest = "Egypt",
                 Profit = 0.00M
             };
-            TransportationProvider.User.Id = TransportationProviderUser.Id;
         }
 
         public void SeedAgents()
@@ -134,17 +130,17 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
                 FirstName = "Agent",
                 LastName = "47",
                 PhoneNumber = "004712345",
-                Email = "agent47@mail.com",                
-                TravellerId = Traveller.User.Id,                
-                HostId = Host.User.Id,                
-                TransportationProviderId = TransportationProvider.User.Id,
-                Profit = 0.00M
+                Email = "agent47@mail.com",
+                Profit = 0.00M,
+                HostId = Host.Id,                
+                TransportationProviderId = TransportationProvider.Id,
+                TravellerId = Traveller.Id
             };
         }
-        
+
         public void SeedContinents()
         {
-            
+
             Europe = new Continent()
             {
                 Id = 1,
@@ -170,7 +166,7 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
             {
                 Id = 4,
                 Name = "South America",
-                IsVisitableDuringThisSeason= true
+                IsVisitableDuringThisSeason = true
             };
 
             NorthAmerica = new Continent()
@@ -184,7 +180,7 @@ namespace WorldTravelTour2024.Infrastructure.Data.SeedDb
             {
                 Id = 6,
                 Name = "Australia",
-                IsVisitableDuringThisSeason= true
+                IsVisitableDuringThisSeason = true
             };
 
             Antarctica = new Continent()
