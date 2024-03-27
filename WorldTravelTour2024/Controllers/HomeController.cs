@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WorldTravelTour2024.Core.Models.Home;
 using WorldTravelTour2024.Models;
 
 namespace WorldTravelTour2024.Controllers
@@ -15,7 +16,9 @@ namespace WorldTravelTour2024.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new IndexViewModel();
+
+            return View(model);
         }
 
         public IActionResult Privacy()
