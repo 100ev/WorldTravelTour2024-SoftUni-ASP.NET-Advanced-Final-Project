@@ -30,5 +30,30 @@ namespace WorldTravelTour2024.Infrastructure.Common
         {
             return DbSet<T>().AsNoTracking();
         }
+
+        public async Task AddAsync<T>(T entity) where T : class
+        {
+            await DbSet<T>().AddAsync(entity);
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await context.SaveChangesAsync();
+        }
+
+        public async Task<T?> ExistByIdAsync<T>(object id) where T : class
+        {
+            return await DbSet<T>().FindAsync(id);
+        }
+
+        public async Task RemoveAsync<T>(object id) where T : class
+        {
+            T? entity = await ExistByIdAsync<T>(id); 
+
+            if (entity != null)
+            {
+                DbSet<T>().Remove(entity);
+            }
+        }
     }
 }
