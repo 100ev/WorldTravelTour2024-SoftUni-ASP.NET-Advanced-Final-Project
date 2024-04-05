@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WorldTravelTour2024.Core.Contracts.Host;
+@model WorldTravelTour2024.Core.Models.Host.BecomeHostFormModel
+
+@{
+    ViewData["Title"] = "Become Host";
+}
+
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">First Name</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your first name!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your last name!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Email Address</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter valid email address!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter valid Phone number">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Address</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your address">
+</div>
+<div class="mb-3">
+<label for="exampleFormControlInput1" class="form-label">Rooms</label>
+<input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter the number of your rooms">
+</div>
+<div class="text-center">
+    <input class="btn btn-primary mt-3 " type="submit" value="Save" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    }

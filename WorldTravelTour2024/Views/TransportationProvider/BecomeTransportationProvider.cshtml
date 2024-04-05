@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WorldTravelTour2024.Core.Contracts.TransportationProvider;
+@model WorldTravelTour2024.Core.Models.TransportationProvider.BecomeTransportationProvider;
+
+@{
+    ViewData["Title"] = "Become Transportation Provider";
+}
+
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">First Name</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your first name!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your last name!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter valid Phone number">
+</div>
+<div class="text-center">
+    <input class="btn btn-primary mt-3 " type="submit" value="Save" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    }
