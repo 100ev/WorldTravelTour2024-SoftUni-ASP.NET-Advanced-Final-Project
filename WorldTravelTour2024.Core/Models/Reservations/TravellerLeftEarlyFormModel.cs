@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WorldTravelTour2024.Core.Models.Reservations
+{
+    public class TravellerLeftEarlyFormModel
+    {
+        public int HostId { get; set; }
+        public int TravellersLeft { get; set; }
+
+        public decimal HostProfit { get; set; }
+    }
+}
