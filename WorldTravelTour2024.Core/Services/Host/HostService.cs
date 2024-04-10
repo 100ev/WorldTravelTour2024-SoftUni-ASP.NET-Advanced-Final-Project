@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WorldTravelTour2024.Core.Contracts.Host;
+using WorldTravelTour2024.Core.Models.Host;
 using WorldTravelTour2024.Infrastructure.Common;
 using WorldTravelTour2024.Infrastructure.Data.Models;
 
@@ -18,13 +14,13 @@ namespace WorldTravelTour2024.Core.Services.Host
         {
             repository = _repository;
         }
-        public async Task<bool> CanWellcomeTravellerAsync(string hostId,string travellerId)
+        public async Task<bool> CanWellcomeTravellerAsync(int hostId, int travellerId)
         {
             var host = await repository.ExistByIdAsync<WorldTravelTour2024.Infrastructure.Data.Models.Host>(hostId);
 
-            if(host != null)
+            if (host != null)
             {
-                var travelelr = host.Travellers.Any(t => t.User.Id == travellerId);
+                var travelelr = host.Travellers.Any(t => t.Id == travellerId);
                 if (travelelr == null)
                 {
                     return false;
@@ -38,10 +34,34 @@ namespace WorldTravelTour2024.Core.Services.Host
             return false;
         }
 
-        public async Task<bool> ExistAsync(string userId)
+        public async Task<BecomeHostFormModel> ExistAsync(int userId)
         {
             return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
-                 .AnyAsync(h => h.User.Id == userId);
+                .Where(h => h.Id == userId)
+                .Select(h => new BecomeHostFormModel()
+                {
+                    Id = h.Id,
+                    FirstName = h.FirstName,
+                    LastName = h.LastName,
+                    Address = h.Address,
+                    PricePerNight = h.PricePerNight,
+                    PhoneNumber = h.PhoneNumber,
+                    Rooms = h.Rooms,
+                    Wallet = h.Wallet
+                })
+                .FirstAsync();
+
+        }
+
+        public async Task<bool> GetHostUserIdAsync(string userId)
+        {
+            var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
+                .FirstOrDefaultAsync(a => a.User.Id == userId);
+            if(host == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> NumberOfRoomsExeedAllowedRooms(int rooms)
@@ -56,56 +76,56 @@ namespace WorldTravelTour2024.Core.Services.Host
 
         public async Task ReceiveProfitAsync()
         {
-           throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public async Task RegisterHostAsync(string userId, string firstName, string lastName, string phoneNumber)
+        public async Task RegisterHostAsync(string userId, string firstName, string lastName, string phoneNumber, int rooms)
         {
-            var host = new WorldTravelTour2024.Infrastructure.Data.Models.Host()
+            if (rooms <= 3)
             {
-                UserId = userId,
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phoneNumber
-            };
-            await repository.AddAsync<WorldTravelTour2024.Infrastructure.Data.Models.Host>(host);
-            await repository.SaveChangesAsync();
-        }
+                var host = new WorldTravelTour2024.Infrastructure.Data.Models.Host()
+                {
+                    UserId = userId,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PhoneNumber = phoneNumber
 
-        public async Task RemoveAsync(string id)
-        {
-            var hostToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
-               .FirstOrDefaultAsync(tp => tp.User.Id == id);
-
-            if (hostToRemove == null)
-            {
-
+                };
+                await repository.AddAsync<WorldTravelTour2024.Infrastructure.Data.Models.Host>(host);
             }
+        await repository.SaveChangesAsync();
+    }
+
+    public async Task RemoveAsync(int id)
+    {
+        var hostToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
+           .FirstOrDefaultAsync(tp => tp.Id == id);
+
+        if (hostToRemove != null)
+        {
             await repository.RemoveAsync<WorldTravelTour2024.Infrastructure.Data.Models.Host>(id);
-            await repository.SaveChangesAsync();
         }
+        await repository.SaveChangesAsync();
+    }
 
-        public async Task UpdateAddressAsync(string userId ,string newAddress)
+    public async Task UpdateAddressAsync(int userId, string newAddress)
+    {
+        var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
+            .FirstOrDefaultAsync(tp => tp.Id == userId);
+        if (host != null)
         {
-            var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
-                .FirstOrDefaultAsync(tp => tp.User.Id == userId);
-            if (host == null)
-            {
-
-            }
             host.Address = newAddress;
-            await repository.SaveChangesAsync();
         }
+        await repository.SaveChangesAsync();
+    }
 
-        public async Task UpdatePersonalInformationAsync(string userId, string phoneNumber, string email, int rooms)
+    public async Task UpdatePersonalInformationAsync(int userId, string phoneNumber, string email, int rooms)
+    {
+        var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
+            .FirstOrDefaultAsync(tp => tp.Id == userId);
+
+        if (host != null)
         {
-            var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
-                .FirstOrDefaultAsync(tp => tp.User.Id == userId);
-
-            if (host == null)
-            {
-
-            }
             host.PhoneNumber = phoneNumber;
             host.Email = email;
             if (rooms > 3)
@@ -116,7 +136,8 @@ namespace WorldTravelTour2024.Core.Services.Host
             {
                 host.Rooms = rooms;
             }
-            await repository.SaveChangesAsync();
         }
+        await repository.SaveChangesAsync();
     }
+}
 }

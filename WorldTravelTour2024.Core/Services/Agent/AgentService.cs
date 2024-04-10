@@ -1,15 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using NuGet.Packaging.Signing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WorldTravelTour2024.Core.Contracts.Agent;
+using WorldTravelTour2024.Core.Models.Host;
+using WorldTravelTour2024.Core.Models.TransportationProvider;
+using WorldTravelTour2024.Core.Models.Traveller;
 using WorldTravelTour2024.Infrastructure.Common;
-using WorldTravelTour2024.Infrastructure.Data.Models;
-
 namespace WorldTravelTour2024.Core.Services.Agent
 {
     public class AgentService : IAgentService
@@ -20,22 +14,80 @@ namespace WorldTravelTour2024.Core.Services.Agent
         {
             repository = _repository;
         }
+
+        public  async Task AskTransportFromTransportationProviderAsync(int travellerId, int trnasportationProviderId, string countryToTransportGuest)
+        {
+            var traveller = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Traveller>()
+                .FirstOrDefaultAsync(t => t.Id == travellerId);
+            var transportationProvider = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
+                .FirstOrDefaultAsync(tp => tp.Id == trnasportationProviderId);
+
+            if(traveller != null && transportationProvider != null)
+            {
+               if(transportationProvider.CountryNameToTransportGuest == countryToTransportGuest)
+                {
+                    transportationProvider.Profit += 250;
+                }
+            }
+
+            await repository.SaveChangesAsync();
+        }
+        public async Task<bool> DeclineReservationAsync(int hostId)
+        {
+            var host = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
+                .FirstOrDefaultAsync(h => h.Host.Id == hostId);
+
+            if(host != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> ExistByIdAsync(string userId)
         {
             return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
                 .AnyAsync(a => a.User.Id == userId);
         }
 
-        public async Task<bool> HostExistByIdAsync(string hostId)
+        public async Task TravellerDecidedToLeaveEarlyAsync(int hostId, int numGuestsLeft)
         {
-            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Host>()
-                .AnyAsync(h => h.User.Id == hostId);
+            var agentWithHost = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
+                .FirstOrDefaultAsync(h => h.Host.Id == hostId);
+            if(agentWithHost != null)
+            {
+                if(agentWithHost.Host.Travellers.Count < numGuestsLeft)
+                {
+                    var sumToRemove = agentWithHost.Host.PricePerNight * numGuestsLeft;
+                    agentWithHost.Host.Wallet -= sumToRemove;
+                }
+            }
+
+            await repository.SaveChangesAsync();
         }
 
-        public async Task ReceiveBonusDuringSeasonAsync(string agentId, decimal bonus, string season)
+        public async Task<BecomeHostFormModel> HostExistByIdAsync(int hostId)
+        {
+            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
+                .Where(h => h.Host.Id == hostId)
+                .Select(h => new BecomeHostFormModel()
+                {
+                    Id = h.Host.Id,
+                    FirstName = h.Host.FirstName,
+                    LastName = h.Host.LastName,
+                    PhoneNumber = h.Host.PhoneNumber,
+                    Address = h.Host.Address,
+                    PricePerNight = h.Host.PricePerNight,
+                    Email = h.Host.Email,
+                    Rooms = h.Host.Rooms,
+                    Wallet = h.Host.Wallet,
+                }).FirstAsync(); 
+        }
+
+        public async Task ReceiveBonusDuringSeasonAsync(int agentId, decimal bonus, string season)
         {
             var agent = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.User.Id == agentId);
+                .FirstOrDefaultAsync(a => a.Id == agentId);
             if (agent != null)
             {
                 if (season == "Summer" || season == "Winter")
@@ -47,10 +99,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task ReceiveProfitAsync(string agentId, decimal profit)
+        public async Task ReceiveProfitAsync(int agentId, decimal profit)
         {
             var agent = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.User.Id == agentId);
+                .FirstOrDefaultAsync(a => a.Id == agentId);
 
             if (agent != null)
             {
@@ -75,10 +127,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task RemoveHostAsync(string HostId)
+        public async Task RemoveHostAsync(int HostId)
         {
             var hostToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.Host.User.Id == HostId);
+                .FirstOrDefaultAsync(a => a.Host.Id == HostId);
 
             if (hostToRemove != null)
             {
@@ -88,10 +140,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task RemoveTransportationProviderAsync(string transportationProviderId)
+        public async Task RemoveTransportationProviderAsync(int transportationProviderId)
         {
             var transportationProviderToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.TransportationProvider.User.Id == transportationProviderId);
+                .FirstOrDefaultAsync(a => a.TransportationProvider.Id == transportationProviderId);
 
             if (transportationProviderToRemove != null)
             {
@@ -101,10 +153,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task RemoveTravellerAsync(string travellerId)
+        public async Task RemoveTravellerAsync(int travellerId)
         {
             var travellerToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.Traveller.User.Id == travellerId);
+                .FirstOrDefaultAsync(a => a.Traveller.Id == travellerId);
 
             if (travellerToRemove != null)
             {
@@ -114,22 +166,38 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task<bool> TransportationProviderExistByIdAsync(string transportationProviderId)
+        public async Task<BecomeTransportationProviderFormModel> TransportationProviderExistByIdAsync(int transportationProviderId)
         {
-            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
-                .AnyAsync(tp => tp.User.Id == transportationProviderId);
+            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
+                .Where(tp => tp.TransportationProvider.Id == transportationProviderId)
+                .Select(tp => new BecomeTransportationProviderFormModel()
+                {
+                    Id = tp.TransportationProvider.Id,
+                    FirstName = tp.TransportationProvider.FirstName,
+                    LastName = tp.TransportationProvider.LastName,
+                    PhoneNumber = tp.PhoneNumber,
+                }).FirstAsync();
         }
 
-        public async Task<bool> TravellerExistByIdAsync(string travellerId)
+        public async Task<BecomeTravellerFormModel> TravellerExistByIdAsync(int travellerId)
         {
-            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Traveller>()
-                .AnyAsync(t => t.User.Id == travellerId);
+            return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
+                .Where(t => t.Traveller.Id == travellerId).
+                Select(t => new BecomeTravellerFormModel()
+                {
+                    Id = t.Traveller.Id,
+                    FirstName = t.Traveller.FirstName,
+                    LastName = t.Traveller.LastName,
+                    PhoneNumber = t.Traveller.PhoneNumber,
+                    Age = t.Traveller.Age,
+                    Money = t.Traveller.Money
+                }).FirstAsync(); 
         }
 
-        public async Task UpdateHostAsync(string hostUserId, string phoneNumber, string email, int rooms)
+        public async Task UpdateHostAsync(int hostUserId, string phoneNumber, string email, int rooms)
         {
             var hostToUpdate = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.Host.User.Id == hostUserId);
+                .FirstOrDefaultAsync(a => a.Host.Id == hostUserId);
 
             if (hostToUpdate != null)
             {
@@ -147,10 +215,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task UpdateTransportationProviderAsync(string transportationProviderUserId, string phoneNumber)
+        public async Task UpdateTransportationProviderAsync(int transportationProviderUserId, string phoneNumber)
         {
             var transportationProviderToUpdate = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.TransportationProvider.User.Id == transportationProviderUserId);
+                .FirstOrDefaultAsync(a => a.TransportationProvider.Id == transportationProviderUserId);
 
             if (transportationProviderUserId != null)
             {
@@ -160,10 +228,10 @@ namespace WorldTravelTour2024.Core.Services.Agent
             await repository.SaveChangesAsync();
         }
 
-        public async Task UpdateTravellerAsync(string travelelrUSerId, string lastName, string phoneNumber)
+        public async Task UpdateTravellerAsync(int travelelrUSerId, string lastName, string phoneNumber)
         {
             var travellerToUpdate = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Agent>()
-                .FirstOrDefaultAsync(a => a.Traveller.User.Id == travelelrUSerId);
+                .FirstOrDefaultAsync(a => a.Traveller.Id == travelelrUSerId);
 
             if (travellerToUpdate != null)
             {

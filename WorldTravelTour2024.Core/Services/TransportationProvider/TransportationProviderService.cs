@@ -1,14 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WorldTravelTour2024.Core.Contracts.TransportationProvider;
 using WorldTravelTour2024.Core.Models.TransportationProvider;
 using WorldTravelTour2024.Infrastructure.Common;
-using WorldTravelTour2024.Infrastructure.Data.Models;
 
 namespace WorldTravelTour2024.Core.Services.TransportationProvider
 {
@@ -20,6 +13,7 @@ namespace WorldTravelTour2024.Core.Services.TransportationProvider
         {
             repository = _repository;
         }
+
         public async Task<bool> CanTransportTravellerToCountryAsync(string country)
         {
             if (await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
@@ -28,18 +22,55 @@ namespace WorldTravelTour2024.Core.Services.TransportationProvider
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
-        public async Task<bool> ExistAsync(string userId)
+        public async Task DeclineService(int transportationProviderId,int travellerID)
+        {
+            var transportationProvider = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
+               .FirstOrDefaultAsync(tp => tp.Id == transportationProviderId);
+            var traveller = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.Traveller>()
+               .FirstOrDefaultAsync(t => t.Id == travellerID);
+
+        }
+
+        public async Task<BecomeTransportationProviderFormModel> ExistAsync(int userId)
         {
             return await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
-                .AnyAsync(tp => tp.User.Id == userId);
+                .Where(tp => tp.Id == userId)
+                .Select(tp => new BecomeTransportationProviderFormModel()
+                {
+                    FirstName = tp.FirstName,
+                    LastName = tp.LastName,
+                    PhoneNumber = tp.PhoneNumber
+                })
+                .FirstAsync();
         }
 
-        public async Task NumberOfTravellersAllowedToTransportAsync(int numTravellers)
+        public async Task<bool> GetTransportationProviderUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            var transportationProvider =  repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
+                .FirstOrDefaultAsync(a => a.User.Id == userId);
+
+            if(transportationProvider == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> NumberOfTravellersAllowedToTransportAsync(int transportationproviderId, int numTravellers)
+        {
+            var transportatioProvider = await repository.AllReadOnly< WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
+                    .FirstOrDefaultAsync(tp => tp.Id == transportationproviderId);
+            if (transportatioProvider != null)
+            {
+                if (numTravellers > 5)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         public async Task<decimal> ReceiveProfitAsync()
         {
@@ -48,21 +79,21 @@ namespace WorldTravelTour2024.Core.Services.TransportationProvider
 
         public async Task RegisterTransportationProviderAsync(string userId, string firstName, string lastName, string phoneNumber)
         {
-            var transportationProvider = new BecomeTransportationProvider()
+            var transportationProvider = new BecomeTransportationProviderFormModel()
             {
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber
             };
-            await repository.AddAsync<WorldTravelTour2024.Core.Models.TransportationProvider.BecomeTransportationProvider>
+            await repository.AddAsync<WorldTravelTour2024.Core.Models.TransportationProvider.BecomeTransportationProviderFormModel>
                 (transportationProvider);
             await repository.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(string id)
+        public async Task RemoveAsync(int id)
         {
             var transportationProviderToRemove = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
-                .FirstOrDefaultAsync(tp => tp.User.Id == id);
+                .FirstOrDefaultAsync(tp => tp.Id == id);
 
             if (transportationProviderToRemove != null)
             {
@@ -71,17 +102,17 @@ namespace WorldTravelTour2024.Core.Services.TransportationProvider
             await repository.SaveChangesAsync();
         }
 
-        public async Task UpdatePersonalInformationAsync(string userId,string phoneNumber)
+        public async Task UpdatePersonalInformationAsync(int userId, string phoneNumber)
         {
             var transportationProvider = await repository.AllReadOnly<WorldTravelTour2024.Infrastructure.Data.Models.TransportationProvider>()
-                .FirstOrDefaultAsync(tp => tp.User.Id == userId);
+                .FirstOrDefaultAsync(tp => tp.Id == userId);
 
             if (transportationProvider != null)
             {
                 transportationProvider.PhoneNumber = phoneNumber;
             }
             await repository.SaveChangesAsync();
-                
+
         }
     }
 }
