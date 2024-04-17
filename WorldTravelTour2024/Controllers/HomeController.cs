@@ -49,9 +49,17 @@ namespace WorldTravelTour2024.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int statusCode)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if(statusCode == 400)
+            {
+                return View("Error");
+            }
+            if(statusCode == 401)
+            {
+                return View("Error");
+            }
+            return View();
         }
     }
 }

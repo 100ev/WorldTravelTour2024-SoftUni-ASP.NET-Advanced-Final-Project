@@ -103,7 +103,7 @@ namespace WorldTravelTour2024.Controllers
             }
             await _agentService.AskTransportFromTransportationProviderAsync(traveller.Id, transportationProvider.Id, country);
 
-            return RedirectToAction(nameof(TravellerController));
+            return RedirectToAction(nameof(AgentController.Index));
 
         }
         [HttpGet]

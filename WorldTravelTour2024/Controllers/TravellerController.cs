@@ -24,9 +24,11 @@ namespace WorldTravelTour2024.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> UpdateInformation(BecomeTravellerFormModel model
+            , int travellerId
             , string newLastName
             , string newPhoneNumber)
         {
+            var traveller =await travellerService.ExistByIdAsync(travellerId);
             if(await travellerService.ExistByIdAsync(model.Id) == null)
             {
                 return BadRequest();
@@ -34,7 +36,9 @@ namespace WorldTravelTour2024.Controllers
 
             model.LastName = newLastName;
             model.PhoneNumber = newPhoneNumber;
-            return Ok(model);
+
+            await travellerService.UpdateInformationAsync(travellerId, model.LastName, model.PhoneNumber);
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> UpdateInformation()
@@ -90,7 +94,7 @@ namespace WorldTravelTour2024.Controllers
 
             return View(model);
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> MakeReservation(ReservationCreatedFormModel model
             , int hostId
             , int travellerId
@@ -115,7 +119,7 @@ namespace WorldTravelTour2024.Controllers
 
             return View(model);
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         [NotTraveller]
         public async Task<IActionResult> BecomeTraveller()
         {
@@ -149,7 +153,7 @@ namespace WorldTravelTour2024.Controllers
 
             return RedirectToAction(nameof(TravellerController.Index));
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> DeleteTraveller()
         {
              return RedirectToAction(nameof(HomeController));

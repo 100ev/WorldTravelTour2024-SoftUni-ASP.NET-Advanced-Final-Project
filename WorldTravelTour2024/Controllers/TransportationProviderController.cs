@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using WorldTravelTour2024.Attributes;
 using WorldTravelTour2024.Controllers.Authorization;
@@ -77,7 +76,7 @@ namespace WorldTravelTour2024.Controllers
             }
             if (await _transportationProviderService.CanTransportTravellerToCountryAsync(country) == false
                 && _transportationProviderService.DeclineService(transportationProvider.Id, travellerToTransport.Id) == null
-                && await _transportationProviderService.NumberOfTravellersAllowedToTransportAsync(transportationProvider.Id,numTravellers) == false)
+                && await _transportationProviderService.NumberOfTravellersAllowedToTransportAsync(transportationProvider.Id, numTravellers) == false)
             {
                 return BadRequest();
             }
@@ -103,7 +102,7 @@ namespace WorldTravelTour2024.Controllers
             var model = new BecomeTransportationProviderFormModel();
             return View(model);
         }
-        [HttpGet("{id}")]
+        [HttpPost]
         [NotTransportationProvider]
         public async Task<IActionResult> BecomeTransportationProvider(BecomeTransportationProviderFormModel model)
         {
@@ -111,7 +110,6 @@ namespace WorldTravelTour2024.Controllers
             {
                 ModelState.AddModelError(nameof(model), UserAlreadyExistsMessage);
             }
-
 
             await _transportationProviderService.RegisterTransportationProviderAsync(User.Id(), model.FirstName, model.LastName, model.PhoneNumber);
             return RedirectToAction(nameof(TransportationProviderController.Index));

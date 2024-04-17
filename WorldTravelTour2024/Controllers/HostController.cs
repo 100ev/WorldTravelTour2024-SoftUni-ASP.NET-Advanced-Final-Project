@@ -109,7 +109,7 @@ namespace WorldTravelTour2024.Controllers
             var model = new BecomeHostFormModel();
             return View(model);
         }
-        [HttpGet("{id}")]
+        [HttpPost]
         [NotHost]
         public async Task<IActionResult> BecomeHost(BecomeHostFormModel model)
         {
@@ -120,6 +120,10 @@ namespace WorldTravelTour2024.Controllers
             if (model.Rooms > 3)
             {
                 ModelState.AddModelError(nameof(model.Rooms), HostRoomsExceedAllowedNumber);
+            }
+            if (ModelState.IsValid == false)
+            {
+                return View(model);
             }
 
             await _hostService.RegisterHostAsync(User.Id(), model.FirstName, model.LastName, model.PhoneNumber, model.Rooms);
