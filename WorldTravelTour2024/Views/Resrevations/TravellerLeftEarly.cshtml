@@ -1,0 +1,14 @@
+﻿@using WorldTravelTour2024.Core.Contracts.Host;
+@inject IHostService hostService;
+@model WorldTravelTour2024.Core.Models.Reservations.TravellerLeftEarlyFormModel;
+
+@{
+    ViewData["Title"] = "Traveller has left early";
+}
+
+<form>
+    @if(await hostService.GetHostUserIdAsync(User.Id()) == true)
+    {
+        <h1>Traveller has decided to leave earlyer from the host with ID @Model.HostId! Travellers left: @Model.TravellersLeft. The host profit is: @Model.HostProfit</h1>
+    }
+</form>
