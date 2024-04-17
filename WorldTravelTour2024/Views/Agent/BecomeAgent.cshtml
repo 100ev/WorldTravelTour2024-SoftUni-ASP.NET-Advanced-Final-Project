@@ -1,9 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@using WorldTravelTour2024.Core.Contracts.TransportationProvider;
-@model WorldTravelTour2024.Core.Models.TransportationProvider.BecomeTransportationProviderFormModel;
+@using WorldTravelTour2024.Core.Contracts.Agent;
+@model WorldTravelTour2024.Core.Models.Agent.BecomeAgentFormModel;
 
 @{
-    ViewData["Title"] = "Become Transportation Provider";
+    ViewData["Title"] = "Become Agent";
 }
 
 <div class="mb-3">
@@ -13,6 +13,10 @@
 <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">Last Name</label>
     <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your last name!">
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Email</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Please enter your email!">
 </div>
 <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
@@ -25,3 +29,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     }
+

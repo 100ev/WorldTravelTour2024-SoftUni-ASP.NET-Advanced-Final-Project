@@ -1,0 +1,17 @@
+﻿@using WorldTravelTour2024.Core.Contracts.TransportationProvider;
+@using WorldTravelTour2024.Core.Contracts.Traveller;
+@inject ITravellerService travellerService;
+@inject ITransportationProviderService transportationProviderService;
+@model WorldTravelTour2024.Core.Models.Destinations.TransportationPossibleFormModel;
+
+@{
+    ViewData["Title"] = "Transportation to chosen destination is possible";
+}
+
+<form>
+    @if (await travellerService.GetTrvellerUserIdAsync(User.Id()) 
+    && await transportationProviderService.GetTransportationProviderUserIdAsync(User.Id()))
+    {
+        <h1>Transportation of traveller with ID: @Model.TravellerId to @Model.Destination is possible thanks to Transportation Provider with ID: @Model.TransportationProviderId</h1>
+    }
+</form>
