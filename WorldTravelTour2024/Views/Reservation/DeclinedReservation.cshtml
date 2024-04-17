@@ -1,0 +1,18 @@
+﻿@using WorldTravelTour2024.Core.Contracts.Traveller;
+@using WorldTravelTour2024.Core.Contracts.Host;
+@model WorldTravelTour2024.Core.Models.Reservations.DeclinedReservationFormModel;
+@inject ITravellerService travellerService;
+@inject IHostService hostService;
+
+@{
+    ViewData["Title"] = "Reservation was declined";
+}
+
+<form>
+    @if (await travellerService.GetTrvellerUserIdAsync(User.Id()) == true 
+    && await hostService.GetHostUserIdAsync(User.Id()) == true)
+    {
+        <h1>Reservation was declined for @Model.Address. The traveller refund is @Model.TravellerRefund and the host profit is @Model.HostProfit</h1>
+    }
+</form>
+
