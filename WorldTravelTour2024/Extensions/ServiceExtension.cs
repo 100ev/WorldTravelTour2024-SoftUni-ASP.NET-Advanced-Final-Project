@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WorldTravelTour2024.Core.Contracts.Agent;
 using WorldTravelTour2024.Core.Contracts.Continent;
+using WorldTravelTour2024.Core.Contracts.CountryInformationAdvisor;
 using WorldTravelTour2024.Core.Contracts.Host;
 using WorldTravelTour2024.Core.Contracts.TransportationProvider;
 using WorldTravelTour2024.Core.Contracts.Traveller;
@@ -24,6 +25,7 @@ namespace WorldTravelTour2024.Extensions
             service.AddScoped<ITransportationProviderService, TransportationProviderService>();
             service.AddScoped<IAgentService, AgentService>();
             service.AddScoped<IContinentService, ContinentService>();
+            service.AddScoped<ICountryInformationAdvisorService, ICountryInformationAdvisorService>();
 
             return service;
         }
