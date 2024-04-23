@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorldTravelTour2024.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using WorldTravelTour2024.Infrastructure.Data;
 namespace WorldTravelTour2024.Infrastructure.Migrations
 {
     [DbContext(typeof(WorldTravelTour2024DbContext))]
-    partial class WorldTravelTour2024DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423094001_AddingCountryInformationAdvisor")]
+    partial class AddingCountryInformationAdvisor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,46 +143,46 @@ namespace WorldTravelTour2024.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bc967507-a2eb-495e-aa35-4f5088165848",
+                            Id = "95f69e30-b419-4aa9-89a2-a51c123a7c4a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3e8b0394-b135-4c06-a937-7af76fb48b89",
+                            ConcurrencyStamp = "32551880-59f5-42ed-8306-8f299b583b19",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ee445565-5c5d-4b20-897c-eb605935dde2",
+                            SecurityStamp = "ee70979a-07be-4671-b4a2-622a961084b5",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "9664819c-24ff-4a5c-a3ac-39a9533d26b0",
+                            Id = "c4297173-ef61-47d0-99d6-1cc376b547d4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02f5cb55-bf5e-47d7-978a-e7e95a4a54c9",
+                            ConcurrencyStamp = "3a5733a7-0ddb-400a-b7f4-464d8994238c",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "26b75467-d4b0-47c6-94e4-5808115c27d3",
+                            SecurityStamp = "98726bc8-e45a-4c5c-bc19-dec66c3a46a0",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "1afcf719-f511-469c-b889-abf6d1a5f134",
+                            Id = "ef6b82aa-bb10-4f44-81f5-4ccc7864c1c4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e1dbc07-698e-4dcc-bf0c-72e9d529afbc",
+                            ConcurrencyStamp = "b90bba3e-ae76-44a1-97dd-cc1cdcb3bd25",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "35441cde-bb24-4e0f-aad1-6b7ef35687ee",
+                            SecurityStamp = "ad2bbe00-d727-492c-8fef-9194794c0661",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "449b6e82-9cce-4cdf-a837-9cc64b35c0a1",
+                            Id = "3c192cce-b4a9-41fc-b227-2216df27f411",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "803c88b7-65c0-4668-a20c-4776975f369a",
+                            ConcurrencyStamp = "509f5ed5-3fab-458a-9d23-fc336af6abdd",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "571eb9b0-2a52-4ae6-bf74-a7f7df0104ce",
+                            SecurityStamp = "c91d55fb-0bc9-4eac-81e1-bda5e9e1e110",
                             TwoFactorEnabled = false
                         });
                 });
@@ -429,23 +431,6 @@ namespace WorldTravelTour2024.Infrastructure.Migrations
                     b.ToTable("Country");
                 });
 
-            modelBuilder.Entity("WorldTravelTour2024.Infrastructure.Data.Models.CountryInformationAdvisor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CountryInformationAdvisor");
-                });
-
             modelBuilder.Entity("WorldTravelTour2024.Infrastructure.Data.Models.Host", b =>
                 {
                     b.Property<int>("Id")
@@ -622,7 +607,7 @@ namespace WorldTravelTour2024.Infrastructure.Migrations
                             LastName = "Smith",
                             Money = 1000.00m,
                             PhoneNumber = "032756657",
-                            UserId = "5839a885-371e-4fa1-8805-a4fddf724525"
+                            UserId = ""
                         });
                 });
 

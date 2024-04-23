@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorldTravelTour2024.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using WorldTravelTour2024.Infrastructure.Data;
 namespace WorldTravelTour2024.Infrastructure.Migrations
 {
     [DbContext(typeof(WorldTravelTour2024DbContext))]
-    partial class WorldTravelTour2024DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423100706_SeedingCountryInformationAdvisor")]
+    partial class SeedingCountryInformationAdvisor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
